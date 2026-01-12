@@ -1,0 +1,32 @@
+<div class="saint-session-container">
+    <button (click)="startSession()" [disabled]="running">Start Session</button>
+    <div *ngIf="sessionId">
+      <p>Session ID: <span class="sid">{{sessionId}}</span></p>
+      <div class="upload-section">
+        <label>
+          Interaction File:
+          <input type="file" (change)="onFileSelected($event, 'interaction')" [disabled]="running" />
+          <span *ngIf="fileNames.interaction">{{ fileNames.interaction }}</span>
+        </label>
+        <label>
+          Prey File:
+          <input type="file" (change)="onFileSelected($event, 'prey')" [disabled]="running" />
+          <span *ngIf="fileNames.prey">{{ fileNames.prey }}</span>
+        </label>
+        <label>
+          Bait File:
+          <input type="file" (change)="onFileSelected($event, 'bait')" [disabled]="running" />
+          <span *ngIf="fileNames.bait">{{ fileNames.bait }}</span>
+        </label>
+      </div>
+      <button (click)="runProcess()" [disabled]="!canRun()">Run Process</button>
+      <span *ngIf="running">Processing...</span>
+      <div class="error" *ngIf="errorMsg">{{ errorMsg }}</div>
+      <div *ngIf="runSuccess && canDownload">
+        <button (click)="downloadResult()">Download Result</button>
+      </div>
+      <div>
+        <button (click)="deleteSession()" [disabled]="running">Delete Session</button>
+      </div>
+    </div>
+  </div>

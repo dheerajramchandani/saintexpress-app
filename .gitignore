@@ -1,0 +1,69 @@
+# =========================
+# General
+# =========================
+.DS_Store
+Thumbs.db
+.env
+.env.*
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+.python-version
+
+# Packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Testing & coverage
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+.nox/
+
+# IDE
+.vscode/
+.idea/
+
+# =========================
+# Node.js
+# =========================
+node_modules/
+npm-debug.log*
+
+# Build outputs
+dist/
+build/
+.out/
+.next/
+.nuxt/
+
+# Cache
+.cache/
+.eslintcache
+
+# =========================
+# OS / Editor
+# =========================
+*.swp
+*.swo
