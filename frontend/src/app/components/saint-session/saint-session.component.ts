@@ -74,7 +74,9 @@ export class SaintSessionComponent {
         this.running = false;
       },
       error: err => {
-        this.errorMsg = err.message;
+        const startIndex = err.message.indexOf('terminate called after');
+        this.errorMsg = startIndex >= 0 ? err.message.substring(startIndex) : err.message;
+        this.errorMsg = "ATTENTION! Error: " + this.errorMsg;
         this.running = false;
       }
     });

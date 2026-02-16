@@ -6,17 +6,14 @@
         <label>
           Interaction File:
           <input type="file" (change)="onFileSelected($event, 'interaction')" [disabled]="running" />
-          <span *ngIf="fileNames.interaction">{{ fileNames.interaction }}</span>
         </label>
         <label>
           Prey File:
           <input type="file" (change)="onFileSelected($event, 'prey')" [disabled]="running" />
-          <span *ngIf="fileNames.prey">{{ fileNames.prey }}</span>
         </label>
         <label>
           Bait File:
           <input type="file" (change)="onFileSelected($event, 'bait')" [disabled]="running" />
-          <span *ngIf="fileNames.bait">{{ fileNames.bait }}</span>
         </label>
       </div>
       <button (click)="runProcess()" [disabled]="!canRun()">Run Process</button>

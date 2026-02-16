@@ -73,11 +73,11 @@ export class SaintApiService {
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
       // Client/network error
-      return throwError(() => new Error(`Network error: ${error.error.message}`));
+      return throwError(new Error(`Network error: ${error.error.message}`));
     } else {
       // FastAPI error format or fallback
-      const msg = error.error?.detail || error.message || `Server returned code ${error.status}`;
-      return throwError(() => new Error(msg));
+      const msg = error.error?.stderr || error.error?.detail || error.message || `Server returned code ${error.status}`;
+      return throwError(new Error(msg));
     }
   }
 }
