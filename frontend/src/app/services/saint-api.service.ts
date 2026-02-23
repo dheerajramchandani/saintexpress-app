@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
 export class SaintApiService {
   private baseUrl = environment.apiBaseUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /**
    * Starts a new session.
@@ -30,7 +30,7 @@ export class SaintApiService {
     formData.append('file', file);
 
     return this.http.post<{ uploaded: string }>(
-      `${this.baseUrl}/session/${encodeURIComponent(sessionId)}/upload/${encodeURIComponent(slot)}`, 
+      `${this.baseUrl}/session/${encodeURIComponent(sessionId)}/upload/${encodeURIComponent(slot)}`,
       formData
     ).pipe(catchError(this.handleError));
   }
@@ -39,9 +39,13 @@ export class SaintApiService {
    * Runs the session (starts the job).
    * Returns: Observable<any> (metadata or error)
    */
-  runSession(sessionId: string): Observable<any> {
+  runSession(sessionId: string, selectedSaintVersion: string): Observable<any> {
+    if (!selectedSaintVersion) {
+      return throwError(new Error("SAINTexpress version (SAINTexpress-spc/SAINTexpress-int) is required."));
+    }
+
     return this.http.post<any>(
-      `${this.baseUrl}/session/${encodeURIComponent(sessionId)}/run`, 
+      `${this.baseUrl}/session/${encodeURIComponent(sessionId)}/run?version=${encodeURIComponent(selectedSaintVersion)}`,
       {}
     ).pipe(catchError(this.handleError));
   }
@@ -52,7 +56,7 @@ export class SaintApiService {
    */
   downloadResult(sessionId: string): Observable<Blob> {
     return this.http.get(
-      `${this.baseUrl}/session/${encodeURIComponent(sessionId)}/download`, 
+      `${this.baseUrl}/session/${encodeURIComponent(sessionId)}/download`,
       { responseType: 'blob' }
     ).pipe(catchError(this.handleError));
   }

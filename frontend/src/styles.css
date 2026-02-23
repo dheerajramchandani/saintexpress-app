@@ -1,0 +1,55 @@
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+/* --- LIGHT MODE (Default) --- */
+mat-sidenav-container,
+mat-sidenav-content {
+    background-color: #ffffff;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+mat-sidenav {
+    background-color: #4b0082 !important;
+}
+
+/* --- DARK MODE (Active when toggled) --- */
+.dark-theme,
+.dark-theme mat-sidenav-container,
+.dark-theme mat-sidenav-content,
+.dark-theme mat-sidenav {
+    background-color: #303030 !important;
+    color: #ffffff !important;
+}
+
+/* Fix Text & Icon visibility for Dark Mode */
+.dark-theme .mat-mdc-list-item-title,
+.dark-theme .mat-mdc-list-item,
+.dark-theme .mdc-list-item__primary-text,
+.dark-theme .mat-mdc-subheader,
+.dark-theme mat-icon {
+    color: #ffffff !important;
+}
+
+.dark-theme h1 {
+    color: #b388ff !important;
+}
+
+/* Smooth transition for the switch */
+mat-sidenav-container,
+mat-sidenav-content,
+mat-sidenav,
+body {
+    transition: background-color 0.4s ease, color 0.4s ease !important;
+}

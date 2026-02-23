@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { SaintApiService } from '../../services/saint-api.service';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-saint-session',
   templateUrl: './saint-session.component.html',
   styleUrls: ['./saint-session.component.css']
 })
@@ -17,10 +17,16 @@ export class SaintSessionComponent {
   errorMsg: string | null = null;
   canDownload = false;
 
-  constructor(private api: SaintApiService) {}
-//   constructor() {
-//     console.log("SaintSessionComponent Constructed");
-//   }
+  selectedSaintVersion = '';
+  saintVersions = [
+    { value: 'SAINTexpress-spc', label: 'SPC (Spectral Counts)' },
+    { value: 'SAINTexpress-int', label: 'INT (Intensity)' }
+  ];
+
+  constructor(private api: SaintApiService) { }
+  //   constructor() {
+  //     console.log("SaintSessionComponent Constructed");
+  //   }
 
   startSession() {
     this.resetUI();
@@ -53,7 +59,7 @@ export class SaintSessionComponent {
   }
 
   canRun(): boolean {
-    return this.sessionId != null && this.uploadedSlots.size === 3 && !this.running;
+    return this.sessionId != null && this.uploadedSlots.size === 3 && !this.running && this.selectedSaintVersion !== '';
   }
 
   runProcess() {
@@ -62,7 +68,7 @@ export class SaintSessionComponent {
     this.runSuccess = false;
     this.errorMsg = null;
     this.canDownload = false;
-    this.api.runSession(this.sessionId).subscribe({
+    this.api.runSession(this.sessionId, this.selectedSaintVersion).subscribe({
       next: res => {
         if (res.success) {
           this.runSuccess = true;

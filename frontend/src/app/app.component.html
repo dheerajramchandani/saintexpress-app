@@ -1,0 +1,52 @@
+<mat-toolbar color="primary" class="mat-elevation-z6">
+  <button mat-icon-button (click)="sidenav.toggle()">
+    <mat-icon>menu</mat-icon> </button>
+  <span>SAINTexpress Analysis Portal</span>
+
+  <span class="spacer"></span> <button mat-icon-button (click)="toggleTheme()">
+    <mat-icon>{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  </button>
+</mat-toolbar>
+
+<mat-sidenav-container class="main-container">
+  <mat-sidenav #sidenav mode="over" class="side-menu">
+    <mat-nav-list>
+      <div mat-subheader>Menu</div>
+
+      <!-- <a mat-list-item (click)="sidenav.close()">
+            <mat-icon matListItemIcon>home</mat-icon>
+            <div matListItemTitle>Dashboard</div>
+          </a>
+    
+          <a mat-list-item (click)="sidenav.close()">
+            <mat-icon matListItemIcon>history</mat-icon>
+            <div matListItemTitle>Session History</div>
+          </a> -->
+
+      <a mat-list-item href="https://github.com/dheerajramchandani/saintexpress-app" target="_blank"
+        (click)="sidenav.close()">
+        <mat-icon matListItemIcon svgIcon="github"></mat-icon>
+        <div matListItemTitle>GitHub</div>
+      </a>
+
+      <a mat-list-item href="https://github.com/dheerajramchandani/saintexpress-app/discussions" target="_blank"
+        (click)="sidenav.close()">
+        <mat-icon matListItemIcon>forum</mat-icon>
+        <div matListItemTitle>Ask a Question</div>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <div class="homepage-layout">
+      <div class="info-section">
+        <h1 class="mat-display-1">SAINTexpress Analysis Portal</h1>
+        <app-info-content></app-info-content>
+      </div>
+
+      <div class="action-section">
+        <app-saint-session></app-saint-session>
+      </div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

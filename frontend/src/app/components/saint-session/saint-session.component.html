@@ -1,29 +1,74 @@
 <div class="saint-session-container">
-    <button (click)="startSession()" [disabled]="running">Start Session</button>
-    <div *ngIf="sessionId">
-      <p>Session ID: <span class="sid">{{sessionId}}</span></p>
-      <div class="upload-section">
-        <label>
-          Interaction File:
-          <input type="file" (change)="onFileSelected($event, 'interaction')" [disabled]="running" />
-        </label>
-        <label>
-          Prey File:
-          <input type="file" (change)="onFileSelected($event, 'prey')" [disabled]="running" />
-        </label>
-        <label>
-          Bait File:
-          <input type="file" (change)="onFileSelected($event, 'bait')" [disabled]="running" />
-        </label>
+  <div *ngIf="!sessionId" class="welcome-card">
+    <mat-icon class="welcome-icon">science</mat-icon>
+    <h3>Ready to Analyze?</h3>
+    <p class="mat-small">Start a new session to upload your files.</p>
+  <button mat-raised-button color = "primary" (click)="startSession()" [disabled]="running">Start Session</button>
+  </div>
+  <div *ngIf="sessionId">
+    <p>Session ID: <span class="session-badge">{{sessionId}}</span></p>
+    <div class="upload-section">
+      <div class="file-row">
+        <input type="file" #interactionInput hidden (change)="onFileSelected($event, 'interaction')">
+        <button mat-raised-button (click)="interactionInput.click()" [disabled]="running">
+          <mat-icon *ngIf="!fileNames['interaction']">upload_file</mat-icon>
+          <mat-icon *ngIf="fileNames['interaction']" class="success-icon">check_circle</mat-icon>
+          Interaction File
+        </button>
+        <span class="file-name" [class.active]="fileNames['interaction']">
+          {{ fileNames['interaction'] || 'No file chosen' }}
+        </span>
       </div>
-      <button (click)="runProcess()" [disabled]="!canRun()">Run Process</button>
-      <span *ngIf="running">Processing...</span>
-      <div class="error" *ngIf="errorMsg">{{ errorMsg }}</div>
-      <div *ngIf="runSuccess && canDownload">
-        <button (click)="downloadResult()">Download Result</button>
+
+      <div class="file-row">
+        <input type="file" #preyInput hidden (change)="onFileSelected($event, 'prey')">
+        <button mat-raised-button (click)="preyInput.click()" [disabled]="running">
+          <mat-icon *ngIf="!fileNames['prey']">upload_file</mat-icon>
+          <mat-icon *ngIf="fileNames['prey']" class="success-icon">check_circle</mat-icon>
+          Prey File
+        </button>
+        <span class="file-name" [class.active]="fileNames['prey']">
+          {{ fileNames['prey'] || 'No file chosen' }}
+        </span>
       </div>
-      <div>
-        <button (click)="deleteSession()" [disabled]="running">Delete Session</button>
+
+      <div class="file-row">
+        <input type="file" #baitInput hidden (change)="onFileSelected($event, 'bait')">
+        <button mat-raised-button (click)="baitInput.click()" [disabled]="running">
+          <mat-icon *ngIf="!fileNames['bait']">upload_file</mat-icon>
+          <mat-icon *ngIf="fileNames['bait']" class="success-icon">check_circle</mat-icon>
+          Bait File
+        </button>
+        <span class="file-name" [class.active]="fileNames['bait']">
+          {{ fileNames['bait'] || 'No file chosen' }}
+        </span>
       </div>
     </div>
+
+    <div class="action-row">
+      <mat-form-field appearance="outline" class="version-select">
+        <mat-label>Select Analysis Type</mat-label>
+        <mat-select [(ngModel)]="selectedSaintVersion" [disabled]="running" required>
+          <mat-option [value]="" disabled>-- Select Version --</mat-option>
+          <mat-option *ngFor="let ver of saintVersions" [value]="ver.value">
+            {{ver.label}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <button mat-raised-button color="accent" (click)="runProcess()" [disabled]="!canRun()"
+        matTooltip="Please upload all 3 files to continue" [matTooltipDisabled]="canRun()">
+        Run Process
+      </button>
+      <span *ngIf="running" class="processing-spinner">Processing...</span>
+    </div>
+
+    <div class="error" *ngIf="errorMsg">{{ errorMsg }}</div>
+    <div *ngIf="runSuccess && canDownload">
+      <button mat-raised-button color="primary" (click)="downloadResult()">Download Result</button>
+    </div>
+    <div class="delete-section">
+      <button mat-raised-button color="warn" (click)="deleteSession()" [disabled]="running">Delete Session</button>
+    </div>
   </div>
+</div>

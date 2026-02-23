@@ -1,0 +1,90 @@
+<section class="summary-content">
+  <p class="mat-body-1">
+    This portal is a dedicated web interface for the Significance Analysis of INTeractome
+    (SAINTexpress) tool. It simplifies the transition from raw proteomics data to high-confidence
+    results by providing a point-and-click environment for scoring protein-protein interactions.
+  </p>
+
+  <h2 class="mat-h2">About SAINTexpress</h2>
+  <div class="mat-body-1 summary-text">
+    <p>
+      <a href="https://saint-apms.sourceforge.net/Main.html" target="_blank">SAINTexpress</a> is an
+      industry-standard statistical tool used in Affinity Purification-Mass Spectrometry (AP-MS) research.
+      In these experiments, it is often difficult to distinguish a true biological "partner" protein
+      from common laboratory contaminants or background noise.
+    </p>
+    <p>
+      As detailed in the <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3446209/" target="_blank">original
+        research publication</a>, the software uses a sophisticated mathematical model to compare your
+      experimental
+      samples against negative controls. It assigns a probability score to each interaction, allowing you to
+      focus
+      your research on the most likely biological candidates.
+    </p>
+  </div>
+
+  <h2 class="mat-h2">How to Use the Portal</h2>
+  <p class="mat-body-1">The system is designed to take you from upload to results in four simple steps:</p>
+  <ul class="mat-body-1">
+    <li><strong>Initialize a Session:</strong> Create a secure workspace for your specific experiment.</li>
+    <li><strong>Upload Input Files:</strong> Provide your three standard data files. Detailed formatting
+      instructions
+      can be found in the
+      <a href="https://raw.githubusercontent.com/bornea/APOSTL/master/wk_images/SAINTexpress-manual.pdf"
+        target="_blank">SAINTexpress Manual</a>.
+      <ul>
+        <li><strong>Interaction File:</strong> Maps which preys were found with which baits.</li>
+        <li><strong>Prey File:</strong> Lists the proteins identified in your mass spec.</li>
+        <li><strong>Bait File:</strong> Defines your experimental baits and control groups.</li>
+      </ul>
+    </li>
+    <li><strong>Select Your Method:</strong> Choose the scoring mode that matches your data:
+      <ul>
+        <li><strong>SPC (Spectral Counts):</strong> Best for data based on the number of identified spectra.
+        </li>
+        <li><strong>INT (Intensity):</strong> Best for data based on continuous MS1 intensity values.</li>
+      </ul>
+    </li>
+    <li><strong>Run & Download:</strong> Start the analysis with one click. The portal manages the execution and
+      provides a final, scored text file for you to download.</li>
+  </ul>
+
+  <h2 class="mat-h2">Data Management & Server Maintenance</h2>
+  <p class="mat-body-1">To ensure the portal remains fast and available for all researchers, we practice a
+    "clean desk" policy:</p>
+  <ul class="mat-body-1">
+    <li><strong>Download your Results:</strong> Once the process is complete, download your output file
+      immediately to your local computer.</li>
+    <li><strong>Delete Session:</strong> After you have successfully saved your results, click the
+      <strong>Delete Session</strong> button. This permanently removes your input and output files from our
+      server, freeing up valuable storage space for other users.
+    </li>
+  </ul>
+
+  <h2 class="mat-h2">Key Benefits</h2>
+  <ul class="mat-body-1">
+    <li><strong>No Technical Setup:</strong> You do not need to download the <a
+        href="https://sourceforge.net/projects/saint-apms/files/" target="_blank">source files</a>, install
+      compilers, or manage complex software libraries.</li>
+    <li><strong>Automated Error Checking:</strong> The portal checks for missing files before starting and
+      provides clear feedback if the analysis encounters an issue, helping you troubleshoot your data formatting
+      quickly.</li>
+    <li><strong>Accessibility:</strong> Perform high-level statistical filtering from any computer with a web
+      browser, regardless of your operating system.</li>
+  </ul>
+
+  <div class="policy-box">
+    <h3 class="mat-h3"><mat-icon inline>security</mat-icon> Privacy & Data Policy</h3>
+    <p class="mat-small">
+      Your privacy is paramount. Data uploaded to this portal is used exclusively for your specific analysis
+      session.
+      <strong>The developers do not access, view, or use your data for any other purpose.</strong>
+    </p>
+    <p class="mat-small">
+      Users are responsible for clicking <strong>Delete Session</strong> after downloading results to clear
+      server space.
+      As a secondary measure, all session data is <strong>automatically purged from our servers every 24
+        hours</strong>.
+    </p>
+  </div>
+</section>

@@ -19,7 +19,7 @@ class SaintexpressExecutionResult:
     stderr: str
 
 
-def _run_job(session_dir: str, timeout: int = 120) -> SaintexpressExecutionResult:
+def _run_job(session_dir: str, saint_version: str, timeout: int = 120) -> SaintexpressExecutionResult:
     """
     Runs SAINTexpress inside a Docker container.
     session_dir: absolute path to the workspace (mounted in container)
@@ -28,9 +28,12 @@ def _run_job(session_dir: str, timeout: int = 120) -> SaintexpressExecutionResul
     # Replace these values with actual details for your container/image/binary
     # REQUIREMENT: Docker daemon must be available on host
     # Backend process must have permission to run docker commands
-    docker_image = "eaf77086b681"
+    docker_image = "saintexpress:1.0.0"
     container_mount_path = "/work"
-    saintexec_binary = "./saintexpress"  # Assuming it is in the root of the image
+    
+    # Construct the bash command using the selected binary
+    # saint_version will be 'SAINTexpress-spc' or 'SAINTexpress-int'
+    cmd = f"/usr/local/bin/{saint_version}"
     args = [
         "docker", "run", "--rm",
         "--cpus", "1.0",
@@ -39,6 +42,7 @@ def _run_job(session_dir: str, timeout: int = 120) -> SaintexpressExecutionResul
         "-w", "/work",
         docker_image,
         # "bash", "-c",
+        cmd,
         "interaction.txt",
         "prey.txt",
         "bait.txt",
@@ -79,14 +83,14 @@ def _run_job(session_dir: str, timeout: int = 120) -> SaintexpressExecutionResul
         stderr=proc.stderr,
     )
 
-async def run_saintexpress_job(session_dir: str, timeout: int = 120) -> SaintexpressExecutionResult:
+async def run_saintexpress_job(session_dir: str, saint_version: str, timeout: int = 120) -> SaintexpressExecutionResult:
     """
     Async interface to make execution concurrent (in a thread/executor).
     """
     loop = asyncio.get_running_loop()
     # You can increase max_workers for more concurrency if needed
     with ThreadPoolExecutor(max_workers=4) as pool:
-        return await loop.run_in_executor(pool, _run_job, session_dir, timeout)
+        return await loop.run_in_executor(pool, _run_job, session_dir, saint_version, timeout)
 
 
 # ----------- Notes & Design Choices -----------

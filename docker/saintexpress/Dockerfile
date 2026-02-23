@@ -35,4 +35,4 @@ RUN rm -rf /tmp/build
 WORKDIR /work
 
 # Set entrypoint to SAINTexpress binary
-ENTRYPOINT ["/usr/local/bin/SAINTexpress-spc"]
+# ENTRYPOINT ["/usr/local/bin/SAINTexpress-spc"]

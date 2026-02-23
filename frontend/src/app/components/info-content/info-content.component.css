@@ -1,0 +1,61 @@
+/* Targets all <h2> tags with the .mat-h2 class */
+h2.mat-h2 {
+  color: #2e7d32;
+  /* A professional forest green */
+  margin-top: 32px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  /* Adds a subtle separator line */
+  padding-bottom: 4px;
+}
+
+.summary-content a {
+  color: #673ab7;
+  /* Matches primary theme */
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.summary-content a:hover {
+  text-decoration: underline;
+}
+
+.summary-text p {
+  margin-bottom: 16px;
+}
+
+.summary-text p:last-child {
+  margin-bottom: 0;
+}
+
+.policy-box {
+  margin-top: 30px;
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #f44336;
+  /* Warning red to emphasize deletion */
+  border-radius: 4px;
+}
+
+.policy-box h3 {
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Dark Theme Overrides */
+:host-context(.dark-theme) h2.mat-h2 {
+  color: #69f0ae;
+  /* Your Accent Green for visibility */
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+:host-context(.dark-theme) .summary-content a {
+  color: #d1c4e9;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+:host-context(.dark-theme) .policy-box {
+  background-color: rgba(255, 255, 255, 0.05);
+}

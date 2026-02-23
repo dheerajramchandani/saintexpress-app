@@ -1,0 +1,68 @@
+.main-container {
+  height: calc(100vh - 64px);
+  /* Subtract toolbar height */
+}
+
+.side-menu {
+  width: 250px;
+}
+
+.homepage-layout {
+  display: flex;
+  padding: 40px;
+  gap: 50px;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+}
+
+.info-section {
+  flex: 1.5;
+  padding: 0 20px 40px 0;
+  background-color: transparent;
+}
+
+/* Targets the main <h1> */
+h1.mat-display-1 {
+  color: #673ab7;
+  /* Material Primary Purple */
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+
+.action-section {
+  flex: 1;
+  position: sticky;
+  top: 40px;
+  /* Adds a subtle container look to the tool */
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 12px;
+  padding: 30px;
+  border: 1px dashed rgba(0, 0, 0, 0.1);
+  min-width: 350px;
+  display: flex;
+}
+
+/* --- Dark Theme Overrides --- */
+:host-context(.dark-theme) h1.mat-display-1 {
+  color: #d1c4e9;
+  /* Light purple for high contrast on dark bg */
+}
+
+:host-context(.dark-theme) .action-section {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* --- Responsive Styles --- */
+@media (max-width: 1024px) {
+  .homepage-layout {
+    flex-direction: column;
+    /* Stack vertically on small screens */
+  }
+
+  .action-section {
+    position: static;
+    /* Remove sticky when stacked */
+    width: 100%;
+  }
+}

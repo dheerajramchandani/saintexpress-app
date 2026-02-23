@@ -1,21 +1,142 @@
 .saint-session-container {
-    border: 1px solid #ccc;
-    padding: 1rem;
-    max-width: 450px;
-    margin: 2rem auto;
-  }
-  
-  .upload-section label {
-    display: block;
-    margin-top: 8px;
-  }
-  
-  .error {
-    color: #b00;
-    margin-top: 1rem;
-  }
-  .sid {
-    font-family: monospace;
-    background: #f0f0f0;
-    padding: 2px 6px;
-  }
+  padding: 1rem;
+  max-width: 450px;
+  margin: 2rem auto;
+}
+
+.welcome-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  color: #673ab7; /* Theme Primary Purple */
+}
+
+.upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+}
+
+.file-row button {
+  flex-shrink: 0;
+  width: 180px;
+  text-align: left;
+}
+
+.file-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.85rem;
+  color: #888;
+  font-style: italic;
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-name.active {
+  color: #2e7d32;
+  /* Green text when file is selected */
+  font-style: normal;
+  font-weight: 500;
+}
+
+.success-icon {
+  color: #69f0ae !important;
+  /* Material Green */
+}
+
+.error {
+  color: #b00;
+  margin-top: 1rem;
+}
+
+/* The Badge Styling */
+.session-badge {
+  background-color: #69f0ae;
+  color: #000000;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-weight: bold;
+  font-family: monospace;
+  /* border: 1px solid rgba(103, 58, 183, 0.3); */
+}
+
+.action-row {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.version-select {
+  width: 200px;
+  /* Adjusting MatFormField bottom padding to align with the button height */
+  margin-bottom: -1.25em; 
+}
+
+.delete-section {
+  margin-top: 30px;
+  border-top: 1px solid #ccc;
+  padding-top: 15px;
+}
+
+/* Ensure the label and text are dark in Light Mode */
+:host ::ng-deep .mat-form-field-label {
+  color: rgb(255, 0, 0) !important;
+}
+
+:host ::ng-deep .mat-select-value {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+:host ::ng-deep .mat-form-field-outline {
+  color: rgba(0, 0, 0, 0.12) !important;
+}
+
+:host ::ng-deep .mat-select-arrow {
+  color: rgba(0, 0, 0) !important;
+}
+
+::ng-deep .mat-option.mat-selected:not(.mat-option-disabled) {
+  color: #69f0ae !important;
+}
+
+/* Dark Theme Overrides */
+:host-context(.dark-theme) .version-select ::ng-deep .mat-select-value {
+  color: white !important;
+}
+
+:host-context(.dark-theme) .version-select ::ng-deep .mat-form-field-outline
+:host-context(.dark-theme) .version-select ::ng-deep .mat-select-arrow {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+:host-context(.dark-theme) .welcome-icon {
+  color: #d1c4e9; /* Lighter purple for contrast */
+}
+
+/* Target Material buttons when they are disabled */
+button[mat-raised-button]:disabled {
+  background-color: rgba(0, 0, 0, 0.12) !important;
+  /* Slightly darker grey */
+  color: rgba(0, 0, 0, 0.38) !important;
+  /* Slightly darker text */
+  cursor: not-allowed;
+}
+
+/* Different look for disabled buttons in Dark Mode */
+:host-context(.dark-theme) button[mat-raised-button]:disabled {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+}

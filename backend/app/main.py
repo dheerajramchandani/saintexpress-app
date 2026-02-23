@@ -2,7 +2,7 @@ import os
 import shutil
 import uuid
 from typing import Optional
-from fastapi import FastAPI, UploadFile, File, HTTPException, status, Response
+from fastapi import FastAPI, UploadFile, File, HTTPException, status, Response, Query
 from fastapi.responses import StreamingResponse, JSONResponse
 from pydantic import BaseModel
 from pathlib import Path
@@ -87,7 +87,7 @@ def upload_input_file(session_id: str, slot: str, file: UploadFile = File(...)):
 
 
 @app.post("/session/{session_id}/run")
-async def run_saintexpress(session_id: str):
+async def run_saintexpress(session_id: str, version: str = Query(..., description="The SAINTexpress binary to execute (spc or int)")):
     session_path = _validate_session(session_id)
     # Validate presence of all required input files
     missing = [name for name in INPUT_FILENAMES.values() if not (session_path / name).is_file()]
@@ -98,7 +98,7 @@ async def run_saintexpress(session_id: str):
         )
 
     # Run the SAINTexpress job via Docker
-    result: SaintexpressExecutionResult = await run_saintexpress_job(str(session_path))
+    result: SaintexpressExecutionResult = await run_saintexpress_job(str(session_path), version)
     
     # On failure, propagate the error
     if result.exit_code != 0:
