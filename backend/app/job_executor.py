@@ -6,6 +6,8 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 import shlex
 import logging
+import docker
+import requests
 
 # This module contains only the job execution logic. All arguments are explicit:
 # No imported global state. This aids re-implementation in Go or other languages.
@@ -21,7 +23,7 @@ class SaintexpressExecutionResult:
 
 def _run_job(session_dir: str, saint_version: str, timeout: int = 120) -> SaintexpressExecutionResult:
     """
-    Runs SAINTexpress inside a Docker container.
+    Runs SAINTexpress inside a Docker container using the Python Docker SDK.
     session_dir: absolute path to the workspace (mounted in container)
     Returns: result object with stdout, stderr, exit code
     """
@@ -35,12 +37,6 @@ def _run_job(session_dir: str, saint_version: str, timeout: int = 120) -> Sainte
     # saint_version will be 'SAINTexpress-spc' or 'SAINTexpress-int'
     cmd = f"/usr/local/bin/{saint_version}"
     args = [
-        "docker", "run", "--rm",
-        "--cpus", "1.0",
-        "--memory", "2g",
-        "-v", f"{os.path.abspath(session_dir)}:{container_mount_path}",
-        "-w", "/work",
-        docker_image,
         # "bash", "-c",
         cmd,
         "interaction.txt",
@@ -56,19 +52,57 @@ def _run_job(session_dir: str, saint_version: str, timeout: int = 120) -> Sainte
     # This assumes all relevant handling is internal to your image/C binary;
     # modify to suit the binary's actual instructions.
     try:
-        proc = subprocess.run(
-            args,
-            cwd=session_dir,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            timeout=timeout,
-            text=True,
+        # Initialize the Docker client via the mounted socket
+        client = docker.from_env()
+
+        # Run the container in detached mode
+        container = client.containers.run(
+            image=docker_image,
+            command=args,
+            volumes={
+                os.path.abspath(session_dir): {
+                    "bind": container_mount_path,
+                    "mode": "rw"
+                }
+            },
+            working_dir=container_mount_path,
+            nano_cpus=int(1.0 * 1e9),  # 1.0 CPU core limit
+            mem_limit="2g",
+            stdout=True,
+            stderr=True,
+            detach=True,
         )
-    except subprocess.TimeoutExpired as e:
+
+        # Wait for the container with the specified timeout
+        result = container.wait(timeout=timeout)
+        exit_code = result.get("StatusCode", 0)
+
+        # Fetch stdout and stderr logs after completion
+        stdout_bytes = container.logs(stdout=True, stderr=False)
+        stderr_bytes = container.logs(stdout=False, stderr=True)
+
+        stdout = stdout_bytes.decode('utf-8', errors='replace') if isinstance(stdout_bytes, bytes) else str(stdout_bytes)
+        stderr = stderr_bytes.decode('utf-8', errors='replace') if isinstance(stderr_bytes, bytes) else str(stderr_bytes)
+        
+    except (requests.exceptions.ReadTimeout, TimeoutError):
+        logger.error("Container execution exceeded timeout of %d seconds", timeout)
+        if container:
+            try:
+                container.stop(timeout=2)
+            except Exception as stop_err:
+                logger.error("Failed to stop timed-out container: %s", stop_err)
+        
+        # Capture whatever logs were produced before the timeout happened
+        stdout_bytes = container.logs(stdout=True, stderr=False) if container else b""
+        stderr_bytes = container.logs(stdout=False, stderr=True) if container else b""
+        
+        stdout = stdout_bytes.decode('utf-8', errors='replace') if isinstance(stdout_bytes, bytes) else ""
+        stderr = (stderr_bytes.decode('utf-8', errors='replace') if isinstance(stderr_bytes, bytes) else "") + f"\nTimeout expired after {timeout} seconds."
+
         return SaintexpressExecutionResult(
-            exit_code=124,  # Unix timeout code
-            stdout=e.stdout or "",
-            stderr=(e.stderr or "") + "\nTimeout expired.",
+            exit_code=124,  # Standard Unix timeout exit code
+            stdout=stdout,
+            stderr=stderr,
         )
     except Exception as e:
         return SaintexpressExecutionResult(
@@ -76,11 +110,18 @@ def _run_job(session_dir: str, saint_version: str, timeout: int = 120) -> Sainte
             stdout="",
             stderr=f"Failed to execute docker run: {e}",
         )
+    finally:
+        # Always clean up the container manually since detach=True was used
+        if container:
+            try:
+                container.remove(force=True)
+            except Exception:
+                pass
 
     return SaintexpressExecutionResult(
-        exit_code=proc.returncode,
-        stdout=proc.stdout,
-        stderr=proc.stderr,
+        exit_code=exit_code,
+        stdout=stdout,
+        stderr=stderr,
     )
 
 async def run_saintexpress_job(session_dir: str, saint_version: str, timeout: int = 120) -> SaintexpressExecutionResult:

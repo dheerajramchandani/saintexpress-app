@@ -1,0 +1,67 @@
+services:
+  # 1. Third-party SAINTexpress Image Builder (Builds once during setup)
+  saintexpress-builder:
+    build: ./docker/saintexpress  # Pointing to the folder containing your SAINTexpress Dockerfile
+    image: saintexpress:1.0.0
+    command: ["echo", "SAINTexpress image built successfully."]
+    restart: "no"
+  
+  # 2. FastAPI Backend
+  backend:
+    build: ./backend
+    container_name: saint-backend
+    restart: always
+    environment:
+      - 'FRONTEND_ORIGINS=https://www.saintexpress.org,https://saintexpress.org'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Allows FastAPI to trigger child docker jobs
+      - /tmp/app-sessions:/tmp/app-sessions       # Exposes sessions to the host for the cron job
+    depends_on:
+      - saintexpress-builder
+    networks:
+      - app-net
+  
+  # 3. GoAccess Real-Time Web Analyzer (Stats)
+  goaccess:
+    image: allinurl/goaccess:1.11
+    container_name: saint-stats
+    restart: always
+    volumes:
+      - /var/log/nginx:/var/log/nginx:ro
+      - /var/www/stats:/var/www/stats
+      - /var/lib/GeoIP:/var/lib/GeoIP:ro
+      - ./configs/goaccess/goaccess.conf:/etc/goaccess/goaccess.conf:ro
+    command: ["--no-global-config", "--config-file=/etc/goaccess/goaccess.conf"]
+    networks:
+      - app-net
+
+  # 4. Nginx Web Server & Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: saint-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Mount Angular static build
+      - ./frontend/dist/saint-app:/usr/share/nginx/html
+      # Mount entire host Nginx sites configuration directory
+      - ./configs/nginx:/etc/nginx/conf.d:ro
+      # Mount .htpasswd file for stats subdomain basic auth
+      - /etc/nginx/.htpasswd-stats:/etc/nginx/.htpasswd-stats:ro
+      # Mount SSL Certificates from host
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      # Shared log directory with GoAccess
+      - /var/log/nginx:/var/log/nginx
+      # Shared stats folder for GoAccess HTML report
+      - /var/www/stats:/var/www/stats
+    depends_on:
+      - backend
+      - goaccess
+    networks:
+      - app-net
+
+networks:
+  app-net:
+    driver: bridge
